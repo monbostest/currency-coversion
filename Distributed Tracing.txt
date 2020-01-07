@@ -1,0 +1,70 @@
+Spring cloud slouth with Zipkin.
+One of the important things is to assign a unique id to a request.
+Spring cloud sleuth would assign a unique id to a request so that I can trace it across multiple components.
+
+Zipkin is what we call a distributed tracing system.
+
+What Spring cloud sleuth does is that it assigns an id to each of the request and yu can see that id in the log against each log that is 
+generated from that application.
+
+Spring Cloud Sleuth assigns the id to the request and we can use that id to trace the request against multiple components.
+However, one of the problems is that this log is distributed in multiple places. It is in multiple consoles( different for every service) and 
+traversing through this is a big pain and therefore need for the distributed tracing server comes in.
+What we want to do is that we would want to centralise this log at one place i.e we would want to send all the logs of different services at one place.
+We would want all these messages being printed in all the logs at one place and we would want to see all the stuff in centralised dashboard. That's where
+Zipkin comes in.
+
+
+
+
+
+Steps to install Zipkin server:
+
+1. Download Zipkinserver. Go to https://zipkin.apache.org/pages/quickstart and download the zipkin server by clicking on 'Latest Release' under JAVA. It will download the .jar file.
+2. Put the downloaded file in some folder. Open Command prompt and go to the directory where zipkin server's downloaded .jar file is kept.
+3. On that path enter the command "java -jar <name of the zipkin jar file>" and press enter. Example in my case the file is "java -jar zipkin-server-2.14.0-exec.jar"
+4. It will start the zipkin server.
+5. In browser go to localhost:9411/zipkin to check whether zipkin server has started or not.
+
+6. Since we want the Zipkin tracing server listning onto the RabbitMQ so we will stop the zipkin server.
+7. Now we will use another small piece of configration to tell Zipkin that we have a RabbitMQ server up and running and Zipkin needs to connect to that.
+Therefore on command prompt we will run the followig command:  
+
+commands to run Zipkin Server:-
+SET RABBIT_URI=amqp://localhost
+java -jar zipkin-server-2.14.0-exec.jar
+
+*amqp is a protocol we are using here.
+
+
+Zipkin Distributed Tracing Server is listning to RabbitMQ for messages
+
+Note: RabbitMQ runs on the Erlang virtual runtime. So we need to install Erlang first as without it we can't get RabbitMQ to work
+
+Add following 2 dependencies in the microservices:
+
+		
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-sleuth-zipkin</artifactId>
+		</dependency>
+
+					OR
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-zipkin</artifactId>
+		</dependency>
+
+Since we want to send the message to Zipkin through RabbitMQ that uses amqp protocol therefor we need to add the below dependency
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+					OR
+
+		<dependency>
+			<groupId>org.springframework.amqp</groupId>
+			<artifactId>spring-rabbit</artifactId>
+		</dependency>

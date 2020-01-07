@@ -1,0 +1,23 @@
+In microservices architecture there are hundreds of microservices that are talking to each other.And there are common features that we would need to implement for all these microservices.
+
+You would want to make sure that every call to every microservice is authenticated. A check is done on
+authorisation whether user has the right permissions.
+
+You would also like to implement things like Rate Limits i.e. for a specific lient you would only want to allow certain number of calls per hour or per day. There might be limits like that.
+
+You want all these microservices to be fault tolerant. If there is a service I am dependent on and its not up I should be able to give some default response back. 
+
+In a typical microservice environment there should also be some kind of Service Aggregation that should be provided. Lets say there is an external consumer who wants to call 15 different services as part of one process. Its better to aggregate those 15 services and provide one service call for the external consumer.
+
+So these are kind of features that are common across all the microservices. And these are features that are implemented at the level of API gateway.
+Instead of allowing microservices to call each other directly we will make all the calls go through an
+API gateway. And API gateway will take care of providing common features like authentication, making sure 
+that all service calls are logged, making sure that Rate Limits are adhered to, making sure that services are fault tolerant.
+Because all calls are routed through API gateways, API gateways also serves as a great place for debugging as well as doing analytics 
+
+We would want to intercept all calls to all microservices and have them pass through and API gateway.
+Nwtflix provides an implementation of API Gateway called ZUUL.
+There are 3 steps to setting up a ZUUL server:
+	1. Create a component for it.
+	2. Second thing is to decide what should it do when it intercepts the request. So in our 	   project when a currency-conversion-service call to currency-exchange-service is intercepted 	   what should the ZUUL API gateway do. That needs to be implemented.
+	3. To make sure that all the important requests are configured to pass through the 	   API gateway. 
